@@ -38,7 +38,7 @@ type Drivers = {
   county: string;
   subCounty: string;
   role: string;
-  // status: string;
+  status: string;
   profilePicture?: string;
 };
 
@@ -164,32 +164,32 @@ const columns: ColumnDef<Drivers>[] = [
     cell: ({ row }) => <div>{row.getValue("subCounty")}</div>,
   },
 
-  // {
-  //   accessorKey: "status",
-  //   header: ({ column }) => (
-  //     <Button
-  //       variant="ghost"
-  //       onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-  //     >
-  //       Status
-  //       <ArrowUpDown className="ml-2 h-4 w-4" />
-  //     </Button>
-  //   ),
-  //   cell: ({ row }) => (
-  //     <div
-  //       className={
-  //         row.getValue("status") === "Online"
-  //           ? "text-green-500 p-2 rounded"
-  //           : "text-red-400 p-2 rounded"
-  //       }
-  //     >
-  //       {row.getValue("status")}
-  //     </div>
-  //   ),
-  // },
+  {
+    accessorKey: "status",
+    header: ({ column }) => (
+      <Button
+        variant="ghost"
+        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+      >
+        Status
+        <ArrowUpDown className="ml-2 h-4 w-4" />
+      </Button>
+    ),
+    cell: ({ row }) => (
+      <div
+        className={
+          row.getValue("status") === "Online"
+            ? "text-green-500 p-2 rounded"
+            : "text-red-400 p-2 rounded"
+        }
+      >
+        {row.getValue("status")}
+      </div>
+    ),
+  },
 ];
 
-export function CustomerDataTable() {
+export function AppsDataTable() {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
     []
@@ -205,7 +205,7 @@ export function CustomerDataTable() {
 
   // Memoized data for filtering drivers
   const data = React.useMemo(
-    () => (users || []).filter((user: Drivers) => user.role === "Customer"),
+    () => (users || []).filter((user: Drivers) => user.role === "Driver"),
     [users]
   );
 
@@ -297,7 +297,7 @@ export function CustomerDataTable() {
       <div className="flex items-center justify-end space-x-2 py-4">
         <div className="flex-1 text-sm text-muted-foreground">
           {table.getFilteredSelectedRowModel().rows.length} of{" "}
-          {table.getFilteredRowModel().rows.length} customer(s) selected.
+          {table.getFilteredRowModel().rows.length} driver(s) selected.
         </div>
         <div className="space-x-2">
           <Button

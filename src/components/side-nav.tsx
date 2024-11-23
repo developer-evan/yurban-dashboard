@@ -36,7 +36,7 @@ const Sidebar: React.FC<SidebarProps> = ({ active, setActive }) => {
           <a
             className={`flex items-center px-6 py-3 ${
               active === "Overview"
-                ? "text-white bg-gray-700 "
+                ? "text-white bg-gray-700"
                 : "hover:bg-gray-700 hover:text-white "
             }`}
             onClick={() => setActive("Overview")}
@@ -45,17 +45,17 @@ const Sidebar: React.FC<SidebarProps> = ({ active, setActive }) => {
             Overview
           </a>
         </Link>
-        <Link href="/apps" legacyBehavior>
+        <Link href="/drivers" legacyBehavior>
           <a
             className={`flex items-center px-6 py-3 ${
               active === "Apps"
                 ? "text-white bg-gray-700 "
                 : "hover:bg-gray-700 hover:text-white "
             }`}
-            onClick={() => setActive("Apps")}
+            onClick={() => setActive("Drivers")}
           >
             <FaCogs className="mr-4" />
-            Apps
+            Drivers
           </a>
         </Link>
         <Link href="/customers" legacyBehavior>
@@ -84,7 +84,7 @@ const Sidebar: React.FC<SidebarProps> = ({ active, setActive }) => {
           >
             <span className="flex items-center">
               <FaChartLine className="mr-4" />
-              Financial Data
+              More
             </span>
             {isFinancialDataOpen ? (
               <FiChevronDown className="ml-2" />
@@ -150,7 +150,7 @@ const Sidebar: React.FC<SidebarProps> = ({ active, setActive }) => {
       {/* Logout Button */}
       <div className="mt-auto mb-4 px-6">
         <Button
-        variant="outline"
+          variant="outline"
           className="w-full bg-transparent flex items-center justify-center px-4 py-2 text-red-600 border border-red-600  hover:bg-red-600 hover:text-white transition"
           onClick={handleLogout}
         >
