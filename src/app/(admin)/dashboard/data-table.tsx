@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 import React from "react";
 import {
@@ -25,11 +26,12 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { getUsers } from "@/utils/getUsers";
 import { useQuery } from "@tanstack/react-query";
+import { getAllRides } from "@/utils/getAllRides";
 
-// Define driver type
-type Drivers = {
+type Rides = {
+  driverId: any;
+  customerId: any;
   firstName: string;
   lastName: string;
   email: string;
@@ -38,12 +40,12 @@ type Drivers = {
   county: string;
   subCounty: string;
   role: string;
-  status: string;
+  // status: string;
   profilePicture?: string;
+  rides: string[];
 };
 
-// Columns definition memoized
-const columns: ColumnDef<Drivers>[] = [
+const columns: ColumnDef<Rides>[] = [
   {
     id: "select",
     header: ({ table }) => (
@@ -67,19 +69,19 @@ const columns: ColumnDef<Drivers>[] = [
     enableHiding: false,
   },
   {
-    id: "name",
+    id: "customerName",
     header: ({ column }) => (
       <Button
         variant="ghost"
         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
       >
-        Name
+        Customer Name
         <ArrowUpDown className="ml-2 h-4 w-4" />
       </Button>
     ),
     cell: ({ row }) => {
-      const firstName = row.original.firstName ?? "";
-      const lastName = row.original.lastName ?? "";
+      const firstName = row.original.customerId.firstName ?? "";
+      const lastName = row.original.customerId.lastName ?? "";
 
       return (
         <div className="flex items-center gap-2">
@@ -92,84 +94,85 @@ const columns: ColumnDef<Drivers>[] = [
         </div>
       );
     },
-    // filterFn: (row, columnId, filterValue) => {
-    //   const firstName = row.original.firstName ?? "";
-    //   const lastName = row.original.lastName ?? "";
-    //   const fullName = `${firstName} ${lastName}`.toLowerCase();
-    //   return fullName.includes(filterValue.toLowerCase());
-    // },
+    filterFn: (row, columnId, filterValue) => {
+      const firstName = row.original.firstName ?? "";
+      const lastName = row.original.lastName ?? "";
+      const fullName = `${firstName} ${lastName}`.toLowerCase();
+      return fullName.includes(filterValue.toLowerCase());
+    },
   },
-  // {
-  //   accessorKey: "email",
-  //   header: "Email",
-  //   cell: ({ row }) => <div>{row.getValue("email")}</div>,
-  // },
   {
-    accessorKey: "phoneNumber",
+    id: "driverName",
     header: ({ column }) => (
       <Button
         variant="ghost"
         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
       >
-        Phone Number
+        Driver Name
         <ArrowUpDown className="ml-2 h-4 w-4" />
       </Button>
     ),
-    cell: ({ row }) => <div>{row.getValue("phoneNumber")}</div>,
-  },
-  {
-    accessorKey: "email",
-    header: ({ column }) => (
-      <Button
-        variant="ghost"
-        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-      >
-        Email
-        <ArrowUpDown className="ml-2 h-4 w-4" />
-      </Button>
-    ),
-    cell: ({ row }) => <div>{row.getValue("email")}</div>,
-  },
-  {
-    accessorKey: "gender",
-    header: ({ column }) => (
-      <Button
-        variant="ghost"
-        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-      >
-        Gender
-        <ArrowUpDown className="ml-2 h-4 w-4" />
-      </Button>
-    ),
-    cell: ({ row }) => <div>{row.getValue("gender")}</div>,
-  },
-  {
-    accessorKey: "county",
-    header: ({ column }) => (
-      <Button
-        variant="ghost"
-        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-      >
-        County
-        <ArrowUpDown className="ml-2 h-4 w-4" />
-      </Button>
-    ),
-    cell: ({ row }) => <div>{row.getValue("county")}</div>,
-  },
-  {
-    accessorKey: "subCounty",
-    header: ({ column }) => (
-      <Button
-        variant="ghost"
-        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-      >
-        Sub-County
-        <ArrowUpDown className="ml-2 h-4 w-4" />
-      </Button>
-    ),
-    cell: ({ row }) => <div>{row.getValue("subCounty")}</div>,
-  },  
+    cell: ({ row }) => {
+      const firstName = row.original.driverId.firstName ?? "";
+      const lastName = row.original.driverId.lastName ?? "";
 
+      return (
+        <div className="flex items-center gap-2">
+          <Avatar>
+            <AvatarFallback>
+              {`${firstName[0]}${lastName[0]}`.toUpperCase()}
+            </AvatarFallback>
+          </Avatar>
+          {`${firstName} ${lastName}`.trim()}
+        </div>
+      );
+    },
+    filterFn: (row, columnId, filterValue) => {
+      const firstName = row.original.firstName ?? "";
+      const lastName = row.original.lastName ?? "";
+      const fullName = `${firstName} ${lastName}`.toLowerCase();
+      return fullName.includes(filterValue.toLowerCase());
+    },
+  },
+  {
+    accessorKey: "passengerNumber",
+    header: ({ column }) => (
+      <Button
+        variant="ghost"
+        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+      >
+        Passenger
+        <ArrowUpDown className="ml-2 h-4 w-4" />
+      </Button>
+    ),
+    cell: ({ row }) => <div>{row.getValue("passengerNumber")}</div>,
+  },
+  {
+    accessorKey: "pickupLocation",
+    header: ({ column }) => (
+      <Button
+        variant="ghost"
+        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+      >
+        Pickup
+        <ArrowUpDown className="ml-2 h-4 w-4" />
+      </Button>
+    ),
+    cell: ({ row }) => <div>{row.getValue("pickupLocation")}</div>,
+  },
+  {
+    accessorKey: "dropoffLocation",
+    header: ({ column }) => (
+      <Button
+        variant="ghost"
+        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+      >
+        Drop Off
+        <ArrowUpDown className="ml-2 h-4 w-4" />
+      </Button>
+    ),
+    cell: ({ row }) => <div>{row.getValue("dropoffLocation")}</div>,
+  },
   {
     accessorKey: "status",
     header: ({ column }) => (
@@ -184,8 +187,10 @@ const columns: ColumnDef<Drivers>[] = [
     cell: ({ row }) => (
       <div
         className={
-          row.getValue("status") === "Online"
+          row.getValue("status") === "Accepted"
             ? "text-green-500 p-2 rounded"
+            : row.getValue("status") === "Pending"
+            ? "text-yellow-500 p-2 rounded"
             : "text-red-400 p-2 rounded"
         }
       >
@@ -193,30 +198,45 @@ const columns: ColumnDef<Drivers>[] = [
       </div>
     ),
   },
+  {
+    accessorKey: "createdAt",
+    header: ({ column }) => (
+      <Button
+        variant="ghost"
+        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+      >
+        Date Requested
+        <ArrowUpDown className="ml-2 h-4 w-4" />
+      </Button>
+    ),
+
+    cell: ({ row }) => (
+      <div>{new Date(row.getValue("createdAt")).toLocaleString()}</div>
+    ),
+  },
 ];
 
-export function AppsDataTable() {
+export default function RidesData() {
   const [sorting, setSorting] = React.useState<SortingState>([]);
-  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
-    []
-  );
+  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([
+    { id: "status", value: "Accepted" }, // Default filter to show only "Accepted" status
+  ]);
   const [columnVisibility, setColumnVisibility] =
     React.useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = React.useState({});
 
-  const { data: users, isLoading } = useQuery({
-    queryKey: ["users"],
-    queryFn: getUsers,
+  const { data: rides, isLoading } = useQuery({
+    queryKey: ["rides"],
+    queryFn: getAllRides,
   });
 
-  // Memoized data for filtering drivers
-  const data = React.useMemo(
-    () => (users || []).filter((user: Drivers) => user.role === "Driver"),
-    [users]
-  );
-
   const table = useReactTable({
-    data,
+    data: Array.isArray(rides)
+      ? rides.sort(
+          (a, b) =>
+            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+        )
+      : [],
     columns,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
@@ -239,13 +259,16 @@ export function AppsDataTable() {
   }
 
   return (
-    <div className="w-full mb-auto min-h-screen">
+    <div className="w-full mb-auto min-h-screen pb-16">
+      <h1 className="text-2xl font-semibold mb-4">Rides</h1>
       <div className="flex items-center py-4">
         <Input
-          placeholder="Search by county ..."
-          value={(table.getColumn("county")?.getFilterValue() as string) ?? ""}
+          placeholder="Search by driver ..."
+          value={
+            (table.getColumn("driverName")?.getFilterValue() as string) ?? ""
+          }
           onChange={(event) =>
-            table.getColumn("county")?.setFilterValue(event.target.value)
+            table.getColumn("name")?.setFilterValue(event.target.value)
           }
           className="max-w-sm mr-2"
         />
@@ -301,7 +324,7 @@ export function AppsDataTable() {
       <div className="flex items-center justify-end space-x-2 py-4">
         <div className="flex-1 text-sm text-muted-foreground">
           {table.getFilteredSelectedRowModel().rows.length} of{" "}
-          {table.getFilteredRowModel().rows.length} driver(s) selected.
+          {table.getFilteredRowModel().rows.length} ride(s) selected.
         </div>
         <div className="space-x-2">
           <Button

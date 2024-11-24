@@ -27,8 +27,8 @@ import {
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { getUsers } from "@/utils/getUsers";
 import { useQuery } from "@tanstack/react-query";
+import { CalendarDatePicker } from "@/components/ui/calendar-date-picker";
 
-// Define driver type
 type Drivers = {
   firstName: string;
   lastName: string;
@@ -40,9 +40,9 @@ type Drivers = {
   role: string;
   // status: string;
   profilePicture?: string;
+  rides: string[];
 };
 
-// Columns definition memoized
 const columns: ColumnDef<Drivers>[] = [
   {
     id: "select",
@@ -67,7 +67,7 @@ const columns: ColumnDef<Drivers>[] = [
     enableHiding: false,
   },
   {
-    accessorKey: "fullName",
+    id: "name",
     header: ({ column }) => (
       <Button
         variant="ghost"
@@ -78,8 +78,8 @@ const columns: ColumnDef<Drivers>[] = [
       </Button>
     ),
     cell: ({ row }) => {
-      const firstName = row.original.firstName as string;
-      const lastName = row.original.lastName as string;
+      const firstName = row.original.firstName ?? "";
+      const lastName = row.original.lastName ?? "";
 
       return (
         <div className="flex items-center gap-2">
@@ -88,16 +88,17 @@ const columns: ColumnDef<Drivers>[] = [
               {`${firstName[0]}${lastName[0]}`.toUpperCase()}
             </AvatarFallback>
           </Avatar>
-          {`${firstName} ${lastName}`}
+          {`${firstName} ${lastName}`.trim()}
         </div>
       );
     },
+    filterFn: (row, columnId, filterValue) => {
+      const firstName = row.original.firstName ?? "";
+      const lastName = row.original.lastName ?? "";
+      const fullName = `${firstName} ${lastName}`.toLowerCase();
+      return fullName.includes(filterValue.toLowerCase());
+    },
   },
-  // {
-  //   accessorKey: "email",
-  //   header: "Email",
-  //   cell: ({ row }) => <div>{row.getValue("email")}</div>,
-  // },
   {
     accessorKey: "phoneNumber",
     header: ({ column }) => (
@@ -163,30 +164,42 @@ const columns: ColumnDef<Drivers>[] = [
     ),
     cell: ({ row }) => <div>{row.getValue("subCounty")}</div>,
   },
-
   // {
-  //   accessorKey: "status",
+  //   accessorKey: "createdAt",
   //   header: ({ column }) => (
   //     <Button
   //       variant="ghost"
   //       onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
   //     >
-  //       Status
+  //       Date Created
   //       <ArrowUpDown className="ml-2 h-4 w-4" />
   //     </Button>
   //   ),
+
   //   cell: ({ row }) => (
-  //     <div
-  //       className={
-  //         row.getValue("status") === "Online"
-  //           ? "text-green-500 p-2 rounded"
-  //           : "text-red-400 p-2 rounded"
-  //       }
-  //     >
-  //       {row.getValue("status")}
-  //     </div>
+  //     <div>{new Date(row.getValue("createdAt")).toLocaleString()}</div>
   //   ),
   // },
+  {
+    accessorKey: "createdAt",
+    header: ({ column }) => (
+      <Button
+        variant="ghost"
+        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+      >
+        Date Created
+        <ArrowUpDown className="ml-2 h-4 w-4" />
+      </Button>
+    ),
+    cell: ({ row }) => (
+      <div>{new Date(row.getValue("createdAt")).toLocaleDateString()}</div>
+    ),
+    filterFn: (row, columnId, filterValue) => {
+      const date = new Date(row.getValue(columnId));
+      const [from, to] = filterValue;
+      return date >= from && date <= to;
+    },
+  },
 ];
 
 export function CustomerDataTable() {
@@ -209,8 +222,30 @@ export function CustomerDataTable() {
     [users]
   );
 
+  const [dateRange, setDateRange] = React.useState<{ from: Date; to: Date }>({
+    from: new Date(new Date().getFullYear(), 0, 1),
+    to: new Date(),
+  });
+
+  const handleDateSelect = ({ from, to }: { from: Date; to: Date }) => {
+    setDateRange({ from, to });
+    table.getColumn("createdAt")?.setFilterValue([from, to]);
+  };
+
   const table = useReactTable({
-    data,
+    data: Array.isArray(data)
+      ? data.sort(
+          (a, b) =>
+            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+        )
+      : [],
+    // data: Array.isArray(UserData.data)
+    // ? UserData.data.sort(
+    //     (a, b) =>
+    //       new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+    //   )
+    // : [],
+
     columns,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
@@ -237,13 +272,17 @@ export function CustomerDataTable() {
       <div className="flex items-center py-4">
         <Input
           placeholder="Search by name ..."
-          value={
-            (table.getColumn("fullName")?.getFilterValue() as string) ?? ""
-          }
+          value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
           onChange={(event) =>
-            table.getColumn("fullName")?.setFilterValue(event.target.value)
+            table.getColumn("name")?.setFilterValue(event.target.value)
           }
           className="max-w-sm mr-2"
+        />
+        <CalendarDatePicker
+          date={dateRange}
+          onDateSelect={handleDateSelect}
+          className="h-9 w-[250px]"
+          variant="outline"
         />
       </div>
       <div className="rounded-md border">

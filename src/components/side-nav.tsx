@@ -1,11 +1,10 @@
 "use client";
 import Link from "next/link";
-import { FaUser, FaChartLine, FaThLarge, FaCogs } from "react-icons/fa";
-import { FiChevronDown, FiChevronRight } from "react-icons/fi";
-import { useState } from "react";
+import { FaUser, FaThLarge } from "react-icons/fa";
 import { Button } from "./ui/button";
 import { useRouter } from "next/navigation";
-import { LogOut } from "lucide-react";
+import { Bike, CarFront, LogOut, Settings, SquareTerminal, UserCog } from "lucide-react";
+import Image from "next/image";
 
 interface SidebarProps {
   active: string;
@@ -13,7 +12,6 @@ interface SidebarProps {
 }
 
 const Sidebar: React.FC<SidebarProps> = ({ active, setActive }) => {
-  const [isFinancialDataOpen, setIsFinancialDataOpen] = useState(false);
   const router = useRouter();
 
   const handleLogout = (e: { preventDefault: () => void }) => {
@@ -26,7 +24,14 @@ const Sidebar: React.FC<SidebarProps> = ({ active, setActive }) => {
   return (
     <div className="h-screen border-r text-slate-800 flex flex-col w-60">
       {/* Header */}
-      <div className="flex items-center justify-center h-14 border-b bg-gray-50 text-xl font-bold">
+      <div className="flex items-center justify-center gap-3 h-14 border-b bg-gray-50 text-xl font-bold">
+        <Image
+          src="/yurbann.png"
+          alt="Yurban Rides"
+          width={40}
+          height={40}
+          className="rounded-full"
+        />
         <p>Yurban Rides</p>
       </div>
 
@@ -54,7 +59,7 @@ const Sidebar: React.FC<SidebarProps> = ({ active, setActive }) => {
             }`}
             onClick={() => setActive("Drivers")}
           >
-            <FaCogs className="mr-4" />
+            <CarFront className="mr-4" />
             Drivers
           </a>
         </Link>
@@ -67,13 +72,51 @@ const Sidebar: React.FC<SidebarProps> = ({ active, setActive }) => {
             }`}
             onClick={() => setActive("Customers")}
           >
-            <FaUser className="mr-4" />
+            <UserCog className="mr-4" />
             Customers
           </a>
         </Link>
-
+        <Link href="/rides" legacyBehavior>
+          <a
+            className={`flex items-center px-6 py-3 ${
+              active === "Rides"
+                ? "text-white bg-gray-700 "
+                : "hover:bg-gray-700 hover:text-white "
+            }`}
+            onClick={() => setActive("Rides")}
+          >
+            <Bike className="mr-4" />
+            Rides
+          </a>
+        </Link>
+        <Link href="/profile" legacyBehavior>
+          <a
+            className={`flex items-center px-6 py-3 ${
+              active === "Profile"
+                ? "text-white bg-gray-700 "
+                : "hover:bg-gray-700 hover:text-white "
+            }`}
+            onClick={() => setActive("Profile")}
+          >
+            <FaUser className="mr-4" />
+            Profile
+          </a>
+        </Link>
+        <Link href="/settings" legacyBehavior>
+          <a
+            className={`flex items-center px-6 py-3 ${
+              active === "Settings"
+                ? "text-white bg-gray-700 "
+                : "hover:bg-gray-700 hover:text-white "
+            }`}
+            onClick={() => setActive("Settings")}
+          >
+            <Settings className="mr-4" />
+            Settings
+          </a>
+        </Link>
         {/* Financial Data Dropdown */}
-        <div>
+        {/* <div>
           <button
             className={`flex items-center justify-between w-full px-6 py-3 ${
               active === "Financial Data"
@@ -144,7 +187,7 @@ const Sidebar: React.FC<SidebarProps> = ({ active, setActive }) => {
               </Link>
             </div>
           )}
-        </div>
+        </div> */}
       </div>
 
       {/* Logout Button */}

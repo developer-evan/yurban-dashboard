@@ -10,6 +10,7 @@ import { Eye, EyeOff, LogIn } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
  import toast, { Toaster } from "react-hot-toast";
+import Image from "next/image";
 
 function Login() {
   const router = useRouter();
@@ -44,6 +45,13 @@ function Login() {
     <div className="flex min-h-screen items-center justify-center bg-gray-100 dark:bg-gray-900">
       <Toaster />
       <div className="w-full max-w-sm p-6 bg-white dark:bg-gray-800 rounded-lg shadow-md">
+        <Image
+          src="/yurbann.png"
+          alt="Yurban Rides"
+          width={60}
+          height={60}
+          className="rounded-full mx-auto flex"
+          />
         <div className="text-center">
           <h1 className="text-2xl font-bold text-gray-800 dark:text-gray-200">
             Log in to your Account
@@ -74,7 +82,7 @@ function Login() {
                 setValues({ ...values, phoneNumber: e.target.value })
               }
               required
-              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-[#ED2428]"
             />
           </div>
           <div className="relative">
@@ -92,7 +100,7 @@ function Login() {
                 setValues({ ...values, pin: e.target.value })
               }
               required
-              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-[#ED2428]"
             />
             <div
               className="absolute inset-y-0 right-0 top-6 flex items-center px-3 cursor-pointer"
@@ -114,34 +122,21 @@ function Login() {
               Remember me
             </Label>
             <Link
-              href="/forget-password"
-              className="text-blue-500 hover:underline"
+              href="#"
+              className="text-[#ED2428] hover:underline"
             >
               Forgot Password?
             </Link>
           </div>
           <Button
             type="submit"
-            className="w-full bg-blue-500 text-white hover:bg-blue-600 p-3 flex items-center justify-center rounded-lg"
+            className="w-full bg-[#ED2428] text-white hover:bg-[#fa4f51] p-3 flex items-center justify-center rounded-lg"
           >
             <LogIn className="w-5 h-5 mr-2" />
             {loginMutation.isPending ? "Logging in..." : "Log in"}
           </Button>
         </form>
-        <div className="text-center mt-4 text-gray-600 dark:text-gray-400">
-          {/* <p className="text-sm">
-            Didn’t activate your account?{" "}
-            <Link href="/activate" className="text-blue-500 hover:underline">
-              Activate Account
-            </Link>
-          </p> */}
-          <p className="text-sm mt-2">
-            Don’t have an account?{" "}
-            <Link href="/register" className="text-blue-500 hover:underline">
-              Sign up
-            </Link>
-          </p>
-        </div>
+       
       </div>
     </div>
   );
