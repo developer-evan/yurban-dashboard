@@ -3,7 +3,7 @@ import Link from "next/link";
 import { FaUser, FaThLarge } from "react-icons/fa";
 import { Button } from "./ui/button";
 import { useRouter } from "next/navigation";
-import { Bike, CarFront, LogOut, Settings, SquareTerminal, UserCog } from "lucide-react";
+import { Bike, CarFront, LogOut, Settings, UserCog } from "lucide-react";
 import Image from "next/image";
 
 interface SidebarProps {

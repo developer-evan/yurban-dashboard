@@ -137,7 +137,9 @@ export const CalendarDatePicker = React.forwardRef<
       setYearFrom(from.getFullYear());
       setMonthTo(to);
       setYearTo(to.getFullYear());
-      closeOnSelect && setIsPopoverOpen(false);
+      if (closeOnSelect) {
+        setIsPopoverOpen(false);
+      }
     };
 
     const handleDateSelect = (range: DateRange | undefined) => {
@@ -305,7 +307,7 @@ export const CalendarDatePicker = React.forwardRef<
       setHighlightedPart(null);
     };
 
-    const handleWheel = (event: React.WheelEvent, part: string) => {
+    const handleWheel = (event: React.WheelEvent) => {
       event.preventDefault();
       setSelectedRange(null);
       if (highlightedPart === "firstDay") {
@@ -313,9 +315,11 @@ export const CalendarDatePicker = React.forwardRef<
         const increment = event.deltaY > 0 ? -1 : 1;
         newDate.setDate(newDate.getDate() + increment);
         if (newDate <= (date.to as Date)) {
-          numberOfMonths === 2
-            ? onDateSelect({ from: newDate, to: new Date(date.to as Date) })
-            : onDateSelect({ from: newDate, to: newDate });
+          if (numberOfMonths === 2) {
+            onDateSelect({ from: newDate, to: new Date(date.to as Date) });
+          } else {
+            onDateSelect({ from: newDate, to: newDate });
+          }
           setMonthFrom(newDate);
         } else if (newDate > (date.to as Date) && numberOfMonths === 1) {
           onDateSelect({ from: newDate, to: newDate });
