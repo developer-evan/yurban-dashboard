@@ -191,7 +191,9 @@ const columns: ColumnDef<Rides>[] = [
             ? "text-green-500 p-2 rounded"
             : row.getValue("status") === "Pending"
             ? "text-yellow-500 p-2 rounded"
-            : "text-red-400 p-2 rounded"
+            : row.getValue("status") === "Completed"
+            ? "text-sky-600 p-2 rounded"
+            : "text-red-500 p-2 rounded"
         }
       >
         {row.getValue("status")}

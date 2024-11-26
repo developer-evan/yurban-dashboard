@@ -191,7 +191,9 @@ const columns: ColumnDef<Rides>[] = [
             ? "text-green-500 p-2 rounded"
             : row.getValue("status") === "Pending"
             ? "text-yellow-500 p-2 rounded"
-            : "text-red-400 p-2 rounded"
+            : row.getValue("status") === "Completed"
+            ? "text-sky-600 p-2 rounded"
+            : "text-red-500 p-2 rounded"
         }
       >
         {row.getValue("status")}
@@ -219,7 +221,7 @@ const columns: ColumnDef<Rides>[] = [
 export default function RidesData() {
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([
-    { id: "status", value: "Accepted" }, // Default filter to show only "Accepted" status
+    { id: "status", value: "Completed" }, // Default filter to show only "Accepted" status
   ]);
   const [columnVisibility, setColumnVisibility] =
     React.useState<VisibilityState>({});
