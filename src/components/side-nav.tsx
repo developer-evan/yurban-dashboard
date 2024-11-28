@@ -37,7 +37,7 @@ const Sidebar: React.FC<SidebarProps> = ({ active, setActive }) => {
   };
 
   return (
-    <div className="h-screen sticky top-0 border-r text-slate-800 flex flex-col w-48 bg-white shadow-lg">
+    <div className="h-screen sticky top-0 border-r text-slate-800 flex flex-col w-56 bg-white shadow-lg">
       {/* Header */}
       <div className="flex items-center justify-center gap-3 h-14 border-b bg-gray-50 text-xl font-bold sticky top-0 z-50">
         <Image
