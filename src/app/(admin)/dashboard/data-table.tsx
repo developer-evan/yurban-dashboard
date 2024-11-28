@@ -101,6 +101,39 @@ const columns: ColumnDef<Rides>[] = [
       return fullName.includes(filterValue.toLowerCase());
     },
   },
+  // {
+  //   id: "driverName",
+  //   header: ({ column }) => (
+  //     <Button
+  //       variant="ghost"
+  //       onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+  //     >
+  //       Driver Name
+  //       <ArrowUpDown className="ml-2 h-4 w-4" />
+  //     </Button>
+  //   ),
+  //   cell: ({ row }) => {
+  //     const firstName = row.original.driverId.firstName ?? "";
+  //     const lastName = row.original.driverId.lastName ?? "";
+
+  //     return (
+  //       <div className="flex items-center gap-2">
+  //         <Avatar>
+  //           <AvatarFallback>
+  //             {`${firstName[0]}${lastName[0]}`.toUpperCase()}
+  //           </AvatarFallback>
+  //         </Avatar>
+  //         {`${firstName} ${lastName}`.trim()}
+  //       </div>
+  //     );
+  //   },
+  //   filterFn: (row, columnId, filterValue) => {
+  //     const firstName = row.original.firstName ?? "";
+  //     const lastName = row.original.lastName ?? "";
+  //     const fullName = `${firstName} ${lastName}`.toLowerCase();
+  //     return fullName.includes(filterValue.toLowerCase());
+  //   },
+  // },
   {
     id: "driverName",
     header: ({ column }) => (
@@ -113,8 +146,8 @@ const columns: ColumnDef<Rides>[] = [
       </Button>
     ),
     cell: ({ row }) => {
-      const firstName = row.original.driverId.firstName ?? "";
-      const lastName = row.original.driverId.lastName ?? "";
+      const firstName = row.original.driverId?.firstName ?? "";
+      const lastName = row.original.driverId?.lastName ?? "";
 
       return (
         <div className="flex items-center gap-2">
@@ -128,12 +161,13 @@ const columns: ColumnDef<Rides>[] = [
       );
     },
     filterFn: (row, columnId, filterValue) => {
-      const firstName = row.original.firstName ?? "";
-      const lastName = row.original.lastName ?? "";
+      const firstName = row.original.driverId?.firstName ?? "";
+      const lastName = row.original.driverId?.lastName ?? "";
       const fullName = `${firstName} ${lastName}`.toLowerCase();
       return fullName.includes(filterValue.toLowerCase());
     },
   },
+
   {
     accessorKey: "passengerNumber",
     header: ({ column }) => (
@@ -201,21 +235,47 @@ const columns: ColumnDef<Rides>[] = [
     ),
   },
   {
-    accessorKey: "createdAt",
+    accessorKey: "completedAt",
     header: ({ column }) => (
       <Button
         variant="ghost"
         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
       >
-        Date Requested
+        Date Completed
         <ArrowUpDown className="ml-2 h-4 w-4" />
       </Button>
     ),
-
-    cell: ({ row }) => (
-      <div>{new Date(row.getValue("createdAt")).toLocaleString()}</div>
-    ),
+    cell: ({ row }) => {
+      const date = new Date(row.getValue("completedAt"));
+      const formattedDate = date.toLocaleString("en-US", {
+        year: "numeric",
+        month: "short",
+        day: "numeric",
+        hour: "numeric",
+        minute: "numeric",
+        second: "numeric",
+        hour12: true, // Ensures AM/PM format
+      });
+      return <div>{formattedDate}</div>;
+    },
   },
+
+  // {
+  //   accessorKey: "createdAt",
+  //   header: ({ column }) => (
+  //     <Button
+  //       variant="ghost"
+  //       onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+  //     >
+  //       Date Requested
+  //       <ArrowUpDown className="ml-2 h-4 w-4" />
+  //     </Button>
+  //   ),
+
+  //   cell: ({ row }) => (
+  //     <div>{new Date(row.getValue("createdAt")).toLocaleString()}</div>
+  //   ),
+  // },
 ];
 
 export default function RidesData() {
@@ -261,8 +321,8 @@ export default function RidesData() {
   }
 
   return (
-    <div className="w-full mb-auto min-h-screen pb-16">
-      <h1 className="text-2xl font-semibold mb-4">Rides</h1>
+    <div className="w-full mb-auto min-h-screen pb-16 mx-auto">
+      <h1 className="text-2xl font-semibold">Rides</h1>
       <div className="flex items-center py-4">
         <Input
           placeholder="Search by driver ..."
@@ -270,7 +330,7 @@ export default function RidesData() {
             (table.getColumn("driverName")?.getFilterValue() as string) ?? ""
           }
           onChange={(event) =>
-            table.getColumn("name")?.setFilterValue(event.target.value)
+            table.getColumn("driverName")?.setFilterValue(event.target.value)
           }
           className="max-w-sm mr-2"
         />

@@ -92,18 +92,7 @@ const columns: ColumnDef<Drivers>[] = [
         </div>
       );
     },
-    // filterFn: (row, columnId, filterValue) => {
-    //   const firstName = row.original.firstName ?? "";
-    //   const lastName = row.original.lastName ?? "";
-    //   const fullName = `${firstName} ${lastName}`.toLowerCase();
-    //   return fullName.includes(filterValue.toLowerCase());
-    // },
   },
-  // {
-  //   accessorKey: "email",
-  //   header: "Email",
-  //   cell: ({ row }) => <div>{row.getValue("email")}</div>,
-  // },
   {
     accessorKey: "phoneNumber",
     header: ({ column }) => (
@@ -155,6 +144,10 @@ const columns: ColumnDef<Drivers>[] = [
       </Button>
     ),
     cell: ({ row }) => <div>{row.getValue("county")}</div>,
+    filterFn: (row, columnId, filterValue) => {
+      const county = row.original.county ?? "";
+      return county.toLowerCase().includes(filterValue.toLowerCase());
+    },
   },
   {
     accessorKey: "subCounty",
@@ -168,8 +161,7 @@ const columns: ColumnDef<Drivers>[] = [
       </Button>
     ),
     cell: ({ row }) => <div>{row.getValue("subCounty")}</div>,
-  },  
-
+  },
   {
     accessorKey: "status",
     header: ({ column }) => (
@@ -197,11 +189,8 @@ const columns: ColumnDef<Drivers>[] = [
 
 export function AppsDataTable() {
   const [sorting, setSorting] = React.useState<SortingState>([]);
-  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
-    []
-  );
-  const [columnVisibility, setColumnVisibility] =
-    React.useState<VisibilityState>({});
+  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
+  const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = React.useState({});
 
   const { data: users, isLoading } = useQuery({
@@ -244,9 +233,10 @@ export function AppsDataTable() {
         <Input
           placeholder="Search by county ..."
           value={(table.getColumn("county")?.getFilterValue() as string) ?? ""}
-          onChange={(event) =>
-            table.getColumn("county")?.setFilterValue(event.target.value)
-          }
+          onChange={(event) => {
+            table.getColumn("county")?.setFilterValue(event.target.value);
+            table.setPageIndex(0); // Reset to the first page when filtering
+          }}
           className="max-w-sm mr-2"
         />
       </div>
@@ -307,10 +297,18 @@ export function AppsDataTable() {
           <Button
             variant="outline"
             size="sm"
+            onClick={() => table.setPageIndex(0)}
+            disabled={!table.getCanPreviousPage()}
+          >
+            {"<<"} First
+          </Button>
+          <Button
+            variant="outline"
+            size="sm"
             onClick={() => table.previousPage()}
             disabled={!table.getCanPreviousPage()}
           >
-            Previous
+            {"<"} Previous
           </Button>
           <Button
             variant="outline"
@@ -318,7 +316,15 @@ export function AppsDataTable() {
             onClick={() => table.nextPage()}
             disabled={!table.getCanNextPage()}
           >
-            Next
+            Next {">"}
+          </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => table.setPageIndex(table.getPageCount() - 1)}
+            disabled={!table.getCanNextPage()}
+          >
+            Last {">>"}
           </Button>
         </div>
       </div>

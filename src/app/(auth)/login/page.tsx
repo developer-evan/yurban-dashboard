@@ -82,7 +82,7 @@ function Login() {
                 setValues({ ...values, phoneNumber: e.target.value })
               }
               required
-              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-[#ED2428]"
+              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-700"
             />
           </div>
           <div className="relative">
@@ -100,7 +100,7 @@ function Login() {
                 setValues({ ...values, pin: e.target.value })
               }
               required
-              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-[#ED2428]"
+              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-gray-700"
             />
             <div
               className="absolute inset-y-0 right-0 top-6 flex items-center px-3 cursor-pointer"
@@ -123,14 +123,15 @@ function Login() {
             </Label>
             <Link
               href="#"
-              className="text-[#ED2428] hover:underline"
+              className="text-gray-700 hover:underline"
             >
+              {/* bg-gray-700 */}
               Forgot Password?
             </Link>
           </div>
           <Button
             type="submit"
-            className="w-full bg-[#ED2428] text-white hover:bg-[#fa4f51] p-3 flex items-center justify-center rounded-lg"
+            className="w-full bg-gray-700 text-white hover:bg-gray-600 p-3 flex items-center justify-center rounded-lg"
           >
             <LogIn className="w-5 h-5 mr-2" />
             {loginMutation.isPending ? "Logging in..." : "Log in"}

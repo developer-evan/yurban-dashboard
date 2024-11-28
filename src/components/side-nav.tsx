@@ -5,6 +5,7 @@ import { Button } from "./ui/button";
 import { useRouter } from "next/navigation";
 import { Bike, CarFront, LogOut, Settings, UserCog } from "lucide-react";
 import Image from "next/image";
+import { useEffect } from "react";
 
 interface SidebarProps {
   active: string;
@@ -14,6 +15,20 @@ interface SidebarProps {
 const Sidebar: React.FC<SidebarProps> = ({ active, setActive }) => {
   const router = useRouter();
 
+  // Set active state on click and persist in localStorage
+  const handleSetActive = (item: string) => {
+    setActive(item);
+    localStorage.setItem("activeSidebar", item);
+  };
+
+  // Initialize active state from localStorage on component mount
+  useEffect(() => {
+    const savedActive = localStorage.getItem("activeSidebar");
+    if (savedActive) {
+      setActive(savedActive);
+    }
+  }, [setActive]);
+
   const handleLogout = (e: { preventDefault: () => void }) => {
     e.preventDefault();
     localStorage.clear();
@@ -22,9 +37,9 @@ const Sidebar: React.FC<SidebarProps> = ({ active, setActive }) => {
   };
 
   return (
-    <div className="h-screen border-r text-slate-800 flex flex-col w-60">
+    <div className="h-screen sticky top-0 border-r text-slate-800 flex flex-col w-48 bg-white shadow-lg">
       {/* Header */}
-      <div className="flex items-center justify-center gap-3 h-14 border-b bg-gray-50 text-xl font-bold">
+      <div className="flex items-center justify-center gap-3 h-14 border-b bg-gray-50 text-xl font-bold sticky top-0 z-50">
         <Image
           src="/yurbann.png"
           alt="Yurban Rides"
@@ -42,9 +57,9 @@ const Sidebar: React.FC<SidebarProps> = ({ active, setActive }) => {
             className={`flex items-center px-6 py-3 ${
               active === "Overview"
                 ? "text-white bg-gray-700"
-                : "hover:bg-gray-700 hover:text-white "
+                : "hover:bg-gray-700 hover:text-white"
             }`}
-            onClick={() => setActive("Overview")}
+            onClick={() => handleSetActive("Overview")}
           >
             <FaThLarge className="mr-4" />
             Overview
@@ -53,11 +68,11 @@ const Sidebar: React.FC<SidebarProps> = ({ active, setActive }) => {
         <Link href="/drivers" legacyBehavior>
           <a
             className={`flex items-center px-6 py-3 ${
-              active === "Apps"
-                ? "text-white bg-gray-700 "
-                : "hover:bg-gray-700 hover:text-white "
+              active === "Drivers"
+                ? "text-white bg-gray-700"
+                : "hover:bg-gray-700 hover:text-white"
             }`}
-            onClick={() => setActive("Drivers")}
+            onClick={() => handleSetActive("Drivers")}
           >
             <CarFront className="mr-4" />
             Drivers
@@ -67,10 +82,10 @@ const Sidebar: React.FC<SidebarProps> = ({ active, setActive }) => {
           <a
             className={`flex items-center px-6 py-3 ${
               active === "Customers"
-                ? "text-white bg-gray-700 "
-                : "hover:bg-gray-700 hover:text-white "
+                ? "text-white bg-gray-700"
+                : "hover:bg-gray-700 hover:text-white"
             }`}
-            onClick={() => setActive("Customers")}
+            onClick={() => handleSetActive("Customers")}
           >
             <UserCog className="mr-4" />
             Customers
@@ -80,10 +95,10 @@ const Sidebar: React.FC<SidebarProps> = ({ active, setActive }) => {
           <a
             className={`flex items-center px-6 py-3 ${
               active === "Rides"
-                ? "text-white bg-gray-700 "
-                : "hover:bg-gray-700 hover:text-white "
+                ? "text-white bg-gray-700"
+                : "hover:bg-gray-700 hover:text-white"
             }`}
-            onClick={() => setActive("Rides")}
+            onClick={() => handleSetActive("Rides")}
           >
             <Bike className="mr-4" />
             Rides
@@ -93,10 +108,10 @@ const Sidebar: React.FC<SidebarProps> = ({ active, setActive }) => {
           <a
             className={`flex items-center px-6 py-3 ${
               active === "Profile"
-                ? "text-white bg-gray-700 "
-                : "hover:bg-gray-700 hover:text-white "
+                ? "text-white bg-gray-700"
+                : "hover:bg-gray-700 hover:text-white"
             }`}
-            onClick={() => setActive("Profile")}
+            onClick={() => handleSetActive("Profile")}
           >
             <FaUser className="mr-4" />
             Profile
@@ -106,88 +121,15 @@ const Sidebar: React.FC<SidebarProps> = ({ active, setActive }) => {
           <a
             className={`flex items-center px-6 py-3 ${
               active === "Settings"
-                ? "text-white bg-gray-700 "
-                : "hover:bg-gray-700 hover:text-white "
+                ? "text-white bg-gray-700"
+                : "hover:bg-gray-700 hover:text-white"
             }`}
-            onClick={() => setActive("Settings")}
+            onClick={() => handleSetActive("Settings")}
           >
             <Settings className="mr-4" />
             Settings
           </a>
         </Link>
-        {/* Financial Data Dropdown */}
-        {/* <div>
-          <button
-            className={`flex items-center justify-between w-full px-6 py-3 ${
-              active === "Financial Data"
-                ? "text-white bg-gray-700 "
-                : "hover:bg-gray-700 hover:text-white "
-            }`}
-            onClick={() => setIsFinancialDataOpen(!isFinancialDataOpen)}
-          >
-            <span className="flex items-center">
-              <FaChartLine className="mr-4" />
-              More
-            </span>
-            {isFinancialDataOpen ? (
-              <FiChevronDown className="ml-2" />
-            ) : (
-              <FiChevronRight className="ml-2" />
-            )}
-          </button>
-          {isFinancialDataOpen && (
-            <div className="pl-5 mt-2 space-y-2">
-              <Link href="/financial-data/accounts" legacyBehavior>
-                <a
-                  className={`block px-3 py-2  ${
-                    active === "Accounts"
-                      ? "text-white bg-gray-700 "
-                      : "hover:bg-gray-700 hover:text-white "
-                  }`}
-                  onClick={() => setActive("Accounts")}
-                >
-                  Accounts
-                </a>
-              </Link>
-              <Link href="/financial-data/transactions" legacyBehavior>
-                <a
-                  className={`block px-3 py-2  ${
-                    active === "Transactions"
-                      ? "text-white bg-gray-700 "
-                      : "hover:bg-gray-700 hover:text-white "
-                  }`}
-                  onClick={() => setActive("Transactions")}
-                >
-                  Transactions
-                </a>
-              </Link>
-              <Link href="/financial-data/statements" legacyBehavior>
-                <a
-                  className={`block px-3 py-2  ${
-                    active === "Statements"
-                      ? "text-white bg-gray-700 "
-                      : "hover:bg-gray-700 hover:text-white "
-                  }`}
-                  onClick={() => setActive("Statements")}
-                >
-                  Statements
-                </a>
-              </Link>
-              <Link href="/financial-data/income" legacyBehavior>
-                <a
-                  className={`block px-3 py-2  ${
-                    active === "Income"
-                      ? "text-white bg-gray-700 "
-                      : "hover:bg-gray-700 hover:text-white "
-                  }`}
-                  onClick={() => setActive("Income")}
-                >
-                  Income
-                </a>
-              </Link>
-            </div>
-          )}
-        </div> */}
       </div>
 
       {/* Logout Button */}

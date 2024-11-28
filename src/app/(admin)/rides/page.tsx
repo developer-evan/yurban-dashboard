@@ -113,8 +113,8 @@ const columns: ColumnDef<Rides>[] = [
       </Button>
     ),
     cell: ({ row }) => {
-      const firstName = row.original.driverId.firstName ?? "";
-      const lastName = row.original.driverId.lastName ?? "";
+      const firstName = row.original.driverId?.firstName ?? "";
+      const lastName = row.original.driverId?.lastName ?? "";
 
       return (
         <div className="flex items-center gap-2">
@@ -128,8 +128,8 @@ const columns: ColumnDef<Rides>[] = [
       );
     },
     filterFn: (row, columnId, filterValue) => {
-      const firstName = row.original.firstName ?? "";
-      const lastName = row.original.lastName ?? "";
+      const firstName = row.original.driverId?.firstName ?? "";
+      const lastName = row.original.driverId?.lastName ?? "";
       const fullName = `${firstName} ${lastName}`.toLowerCase();
       return fullName.includes(filterValue.toLowerCase());
     },
@@ -154,7 +154,7 @@ const columns: ColumnDef<Rides>[] = [
         variant="ghost"
         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
       >
-        Pickup 
+        Pickup
         <ArrowUpDown className="ml-2 h-4 w-4" />
       </Button>
     ),
@@ -167,7 +167,7 @@ const columns: ColumnDef<Rides>[] = [
         variant="ghost"
         onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
       >
-        Drop Off 
+        Drop Off
         <ArrowUpDown className="ml-2 h-4 w-4" />
       </Button>
     ),
@@ -200,6 +200,22 @@ const columns: ColumnDef<Rides>[] = [
       </div>
     ),
   },
+  // {
+  //   accessorKey: "createdAt",
+  //   header: ({ column }) => (
+  //     <Button
+  //       variant="ghost"
+  //       onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+  //     >
+  //       Date Requested
+  //       <ArrowUpDown className="ml-2 h-4 w-4" />
+  //     </Button>
+  //   ),
+
+  //   cell: ({ row }) => (
+  //     <div>{new Date(row.getValue("createdAt")).toLocaleString()}</div>
+  //   ),
+  // },
   {
     accessorKey: "createdAt",
     header: ({ column }) => (
@@ -211,12 +227,20 @@ const columns: ColumnDef<Rides>[] = [
         <ArrowUpDown className="ml-2 h-4 w-4" />
       </Button>
     ),
-    
-    cell: ({ row }) => (
-      <div>{new Date(row.getValue("createdAt")).toLocaleString()}</div>
-    ),
+    cell: ({ row }) => {
+      const date = new Date(row.getValue("createdAt"));
+      const formattedDate = date.toLocaleString("en-US", {
+        year: "numeric",
+        month: "short",
+        day: "numeric",
+        hour: "numeric",
+        minute: "numeric",
+        second: "numeric",
+        hour12: true,
+      });
+      return <div>{formattedDate}</div>;
+    },
   },
-  
 ];
 
 export default function RidesDataTable() {
@@ -234,15 +258,18 @@ export default function RidesDataTable() {
   });
 
   const table = useReactTable({
-      // data: Array.isArray(UserData.data)
+    // data: Array.isArray(UserData.data)
     // ? UserData.data.sort(
     //     (a, b) =>
     //       new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
     //   )
     // : [],
-    data: Array.isArray(rides) ? rides.sort(
-      (a,b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-    ) : [],
+    data: Array.isArray(rides)
+      ? rides.sort(
+          (a, b) =>
+            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+        )
+      : [],
 
     columns,
     onSortingChange: setSorting,
@@ -267,13 +294,16 @@ export default function RidesDataTable() {
 
   return (
     <div className="w-full mb-auto min-h-screen pb-16">
-        <h1 className="text-2xl font-semibold mb-4">Rides</h1>
+      <h1 className="text-2xl font-semibold mb-4">Rides</h1>
       <div className="flex items-center py-4">
         <Input
           placeholder="Search by driver ..."
-          value={(table.getColumn("driverName")?.getFilterValue() as string) ?? ""}
-          onChange={(event) =>
-            table.getColumn("name")?.setFilterValue(event.target.value)
+          value={
+            (table.getColumn("driverName")?.getFilterValue() as string) ?? ""
+          }
+          onChange={
+            (event) =>
+              table.getColumn("driverName")?.setFilterValue(event.target.value) // Corrected column name here
           }
           className="max-w-sm mr-2"
         />

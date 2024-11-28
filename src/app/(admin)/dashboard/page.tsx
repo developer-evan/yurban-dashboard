@@ -24,7 +24,7 @@ function DashboardPage() {
   });
 
   return (
-    <div className="p-6  min-h-screen w-full ">
+    <div className="p-6  min-h-screen w-full mx-auto">
       {userData && (
         <h1 className="text-2xl font-bold mb-6">
           Welcome,{" "}
@@ -124,7 +124,7 @@ function DashboardPage() {
           </div>
         </div>
       </div>
-      <div className="mt-6">
+      <div className="mt-6 mx-auto ">
         <RidesData />
         </div>
     </div>
