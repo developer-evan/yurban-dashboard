@@ -24,111 +24,79 @@ function DashboardPage() {
   });
 
   return (
-    <div className="p-6  min-h-screen w-full mx-auto">
+    <div className="p-8 min-h-screen w-full mx-auto bg-gray-50">
       {userData && (
-        <h1 className="text-2xl font-bold mb-6">
-          Welcome,{" "}
-          <span className="text-blue-600">
-            {userData?.user?.firstName ?? ""} {userData?.user?.lastName ?? ""}
-          </span>
-          !
-        </h1>
+        <div className="mb-8">
+          <h1 className="text-3xl font-bold text-gray-800">
+            Welcome back,{" "}
+            <span className="bg-gradient-to-r from-blue-600 to-blue-400 bg-clip-text text-transparent">
+              {userData?.user?.firstName ?? ""} {userData?.user?.lastName ?? ""}
+            </span>
+          </h1>
+          <p className="text-gray-500 mt-2">Here&apos;s what&lsquo;s happening today</p>
+        </div>
       )}
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        {/* Total Users Card */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+        {/* Stats Cards */}
+        <StatsCard
+          title="All Users"
+          value={usersData?.length ?? 0}
+          icon={<UserCheck size={24} />}
+          bgColor="bg-gradient-to-br from-sky-500 to-blue-600"
+        />
+        
+        <StatsCard
+          title="Drivers"
+          value={usersData?.filter((user: { role: string }) => user.role === "Driver").length ?? 0}
+          icon={<CarFront size={24} />}
+          bgColor="bg-gradient-to-br from-green-500 to-emerald-600"
+        />
+        
+        <StatsCard
+          title="Customers"
+          value={usersData?.filter((user: { role: string }) => user.role === "Customer").length ?? 0}
+          icon={<UserCog size={24} />}
+          bgColor="bg-gradient-to-br from-orange-500 to-amber-600"
+        />
+        
+        <StatsCard
+          title="Total Rides"
+          value={ridesData?.length ?? 0}
+          icon={<Bike size={24} />}
+          bgColor="bg-gradient-to-br from-purple-500 to-indigo-600"
+        />
+      </div>
 
-        <div className="w-full mx-auto p-3 h-full">
-          <div className="border space-y-5 rounded-lg px-4 py-5 h-full flex justify-between items-center">
-            <div className="space-y-4">
-              <h2 className="text-sm font-semibold">All Users</h2>
-              <p className="text-lg flex items-center font-bold">
-                <span>{usersData?.length ?? 0}</span>
-              </p>
-            </div>
-            <div>
-              <p className={`bg-sky-500 text-white p-3 rounded-full`}>
-                <UserCheck size={24} />
-              </p>
-            </div>
-          </div>
-        </div>
-
-        {/* Total Customers Card */}
-        {/* <div className="bg-white shadow-md rounded-lg p-4">
-          <h2 className="text-lg font-medium text-gray-700">Customers</h2>
-          <p className="text-3xl font-bold text-green-600">
-            {usersData?.filter((user: { role: string; }) => user.role === "Customer").length ?? 0}
-          </p>
-        </div> */}
-        <div className="w-full mx-auto p-3 h-full">
-          <div className="border space-y-5 rounded-lg px-4 py-5 h-full flex justify-between items-center">
-            <div className="space-y-4">
-              <h2 className="text-sm font-semibold">Drivers</h2>
-              <p className="text-lg flex items-center font-bold">
-                <span>
-                  {usersData?.filter(
-                    (user: { role: string }) => user.role === "Driver"
-                  ).length ?? 0}
-                </span>
-              </p>
-            </div>
-            <div>
-              <p className={`bg-green-500 text-white p-3 rounded-full`}>
-                <CarFront size={24} />
-              </p>
-            </div>
-          </div>
-        </div>
-
-        <div className="w-full mx-auto p-3 h-full">
-          <div className="border space-y-5 rounded-lg px-4 py-5 h-full flex justify-between items-center">
-            <div className="space-y-4">
-              <h2 className="text-sm font-semibold">Customers</h2>
-              <p className="text-lg flex items-center font-bold">
-                <span>
-                  {usersData?.filter(
-                    (user: { role: string }) => user.role === "Customer"
-                  ).length ?? 0}
-                </span>
-              </p>
-            </div>
-            <div>
-              <p className={`bg-orange-500 text-white p-3 rounded-full`}>
-                <UserCog size={24} />
-              </p>
-            </div>
-          </div>
-        </div>
-
-        {/* Total Rides Card */}
-        {/* <div className="bg-white shadow-md rounded-lg p-4">
-          <h2 className="text-lg font-medium text-gray-700">Total Rides</h2>
-          <p className="text-3xl font-bold text-purple-600">
-            {ridesData?.length ?? 0}
-          </p>
-        </div> */}
-        <div className="w-full mx-auto p-3 h-full">
-          <div className="border space-y-5 rounded-lg px-4 py-5 h-full flex justify-between items-center">
-            <div className="space-y-4">
-              <h2 className="text-sm font-semibold">Rides</h2>
-              <p className="text-lg flex items-center font-bold">
-                <span> {ridesData?.length ?? 0}</span>
-              </p>
-            </div>
-            <div>
-              <p className={`bg-blue-500 text-white p-3 rounded-full`}>
-                <Bike size={24} />
-              </p>
-            </div>
-          </div>
+      <div className="mt-8">
+        <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+          <h2 className="text-xl font-semibold mb-6 text-gray-800">Recent Rides</h2>
+          <RidesData />
         </div>
       </div>
-      <div className="mt-6 mx-auto ">
-        <RidesData />
-        </div>
     </div>
   );
 }
+
+interface StatsCardProps {
+  title: string;
+  value: number;
+  icon: React.ReactNode;
+  bgColor: string;
+}
+
+const StatsCard = ({ title, value, icon, bgColor }: StatsCardProps) => (
+  <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 hover:shadow-md transition-all duration-200 hover:-translate-y-1">
+    <div className="flex justify-between items-start">
+      <div>
+        <h2 className="text-sm font-medium text-gray-600 mb-2">{title}</h2>
+        <p className="text-2xl font-bold text-gray-800">{value}</p>
+      </div>
+      <div className={`${bgColor} p-3 rounded-lg text-white`}>
+        {icon}
+      </div>
+    </div>
+  </div>
+);
 
 export default DashboardPage;

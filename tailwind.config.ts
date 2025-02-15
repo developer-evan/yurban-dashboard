@@ -70,6 +70,12 @@ export default {
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
       },
+      opacity: {
+        '80': '0.8',
+      },
+      transitionDuration: {
+        '200': '200ms',
+      },
     },
   },
   plugins: [require("tailwindcss-animate")],
